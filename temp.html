@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(()=>{
+            console.log('page loaded')
+            function check1(){
+                let a1=$('#bid').val().length
+                let a2=$('#bname').val().length
+                let a3=$('#bcost').val().length
+                if((a1>0)&&(a2>0)&&(a3>0)){
+                    return true
+                }else{return false}
+            }
+            document.addEventListener('click',()=>{
+                if(check1()){
+                    document.querySelector('#add').disabled=false
+                    console.log('all ok')
+                }
+                else{
+                    console.log('something is empty')
+                    document.querySelector('#add').disabled=true
+                }
+            })
+            $('#add').click(()=>{
+                console.log('add button clicked')
+                
+                let inputdata={bid:$('#bid').val(),bname:$('#bname').val(),bcost:$('#bcost').val()}
+                let given=
+                {
+                    type: "get",
+                    dataType: "json",
+                    url: "http://localhost:8081/bookdata",
+                    data: inputdata,
+                    success:(jadata)=>{
+                        console.log('data received successfully');
+                        if(jadata.status){
+                            console.log('data inserted successfully');
+                            $('#bid').val('');
+                            $('#bname').val('');
+                            $('#bcost').val('');
+                            $('#status').text('data inserted successfully');
+                        }else{console.log('data not inserted');}
+                    },
+                    error:(errordata)=>{
+                        console.log('gadbad hai'+errordata);
+                    }
+                };
+                $.ajax(given);
+            })
+        })
+    </script>
+</head>
+<body>
+    <input type="number" id="bid" placeholder="enter book id"><span id="status"></span><br>
+    <input type="text" id="bname" placeholder="enter book name"><br>
+    <input type="number" id="bcost" placeholder="enter book name"><br>
+    <button id="add" disabled>Add</button>
+    <!-- <p id="show"></p> -->
+</body>
+</html>
